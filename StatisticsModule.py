@@ -1,42 +1,30 @@
 testData = [3, 4, 4, 2, 2, 2, 5, 6, 7, 7]
 
-class stats:
+class Stats:
     def __init__(self, dataset):
+        if not isinstance(dataset, list):
+            raise TypeError("Expected", type(dataset), "received", type(dataset))
         if dataset == []:
-            raise Exception("No data detected")
-        self.dataset = dataset
+            raise ValueError("No data detected")
+        self._dataset = sorted(dataset)
+        self._sum = sum(dataset)
 
-    def getSum(self, dataset):
-        print("executing sum function")
-        sum = 0
-        print(sum)
-        for i, v in enumerate(dataset):
-            sum += v
-
-    def getMean(self, dataset):
-        self.checkDataset(dataset)
-        if sum == None:
-            self.getSum(dataset)
-            print(sum)
-
-        mean = sum/len(dataset)
+    def mean(self):
+        mean = self._sum/len(self._dataset)
         return mean
 
-    def getMedian(self, dataset):
-        self.checkDataset(dataset)
-
-        if len(dataset)%2 == 0:
-            halfLength = len(dataset)/2
-            median = (dataset[int(halfLength-1)]+dataset[int(halfLength)])/2
+    def median(self):
+        if len(self._dataset)%2 == 0:
+            halfLength = len(self._dataset)/2
+            median = (self._dataset[int(halfLength-1)]+self._dataset[int(halfLength)])/2
         else:
-            median = dataset[int((len(dataset)-1)/2)]
+            median = self._dataset[int((len(self._dataset)-1)/2)]
         return median
 
-    def getMode(self, dataset):
-        self.checkDataset(dataset)
+    def mode(self):
         frequencyDict = {}
 
-        for i, v in enumerate(dataset):
+        for v in self._dataset:
             if v in frequencyDict:
                 frequencyDict[v] += 1
             else:
@@ -45,7 +33,13 @@ class stats:
         highestFrequency = 1
         for value, frequency in frequencyDict.items():
             if frequency>highestFrequency:
+                highestFrequency = frequency
                 mode = value
+            if highestFrequency == 1:
+                mode = "No mode"
         return mode
 
-    print(getMean(testData))
+statsTest = Stats(testData)
+print("Mean is:", statsTest.mean())
+print("Mean is:", statsTest.median())
+print("Mode is:", statsTest.mode())
