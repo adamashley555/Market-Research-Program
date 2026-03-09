@@ -1,6 +1,5 @@
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QGridLayout, QWidget, QLabel, QLineEdit, QPushButton, QSpacerItem, QSizePolicy
-from PySide6.QtCore import Qt
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -59,6 +58,7 @@ class MainWindow(QMainWindow):
         plotFigure = self.dataPlot.figure
         self.dataPlot.figure.clf()
         data = self.downloadedData = receivedTicker.history(period="1mo", interval="1d")
+        print(data)
         print("Downloaded", receivedTicker)
         #data.columns = data.columns.droplevel(1)
 
@@ -71,12 +71,12 @@ class MainWindow(QMainWindow):
         down = data[data.Close < data.Open]
 
         width = .5
-        width2 = .03
+        width2 = .14
 
         ax.bar(up.index, up.Close-up.Open, width, bottom=up.Open, color="green")
         ax.bar(up.index, up.High-up.Low, width2, bottom=up.Low, color="green")
 
-        ax.bar(down.index, down.Close-down.Open, width, bottom=down.Open, color="red")
+        ax.bar(down.index, down.Open-down.Close, width, bottom=down.Close, color="red")
         ax.bar(down.index, down.High-down.Low, width2, bottom=down.Low, color="red")
 
         ax.tick_params(axis='x', rotation=30)
@@ -89,4 +89,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
+    window.tickerSearch("SPY")
     app.exec()
